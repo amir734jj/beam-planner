@@ -9,7 +9,7 @@ dockerbuild: App/App.csproj
 	${DOCKER_RUN} $<
 
 %.out: %.txt dockerbuild 
-	touch $@ && ${DOCKER_RUN} $< > $@
+	${DOCKER_RUN} $< > $@
 
 %.test: %.txt %.out
 	python3 evaluate.py $^
