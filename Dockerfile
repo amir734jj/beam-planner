@@ -14,7 +14,7 @@ RUN dotnet restore
 RUN dotnet publish -c Release -o out
 
 # No need to have java anymore, this will enable caching
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-bullseye-slim AS run-env
+FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine AS run-env
 
 COPY --from=build-env /app/out /app/out
 
