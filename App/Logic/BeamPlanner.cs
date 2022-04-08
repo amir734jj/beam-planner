@@ -11,20 +11,13 @@ namespace App.Logic
 {
     public class BeamPlanner : IBeamPlanner
     {
+        private readonly BeamConfiguration _beamConfiguration;
+
         private readonly ILogger<BeamPlanner> _logger;
 
-        private const double MaxSimultaneousBeams = 32;
-
-        private const double UserAngle = 45;
-
-        private const int MaxInterferesInterference = 20;
-        
-        private const int MaxSelfInterference = 20;
-
-        private const int NumColors = 4;
-        
-        public BeamPlanner(ILogger<BeamPlanner> logger)
+        public BeamPlanner(BeamConfiguration beamConfiguration, ILogger<BeamPlanner> logger)
         {
+            _beamConfiguration = beamConfiguration;
             _logger = logger;
         }
 
@@ -36,16 +29,18 @@ namespace App.Logic
         /// <param name="b">coordinate b.</param>
         /// <param name="c">coordinate c.</param>
         /// <returns>Inner angle between 3 coordinates.</returns>
-        private double CalculateAlpha(Coordinate a, Coordinate b, Coordinate c)
+        private static double CalculateAlpha(Coordinate a, Coordinate b, Coordinate c)
         {
-            var ba = Normalize(new Coordinate(a.X - b.X, a.Y - b.Y, a.Z - b.Z));
-            var bc = Normalize(new Coordinate(c.X - b.X, c.Y - b.Y, c.Z - b.Z));
+            var ba = Normalize(new Coordinate(b.X - a.X, b.Y - a.Y, b.Z - a.Z));
+            var ca = Normalize(new Coordinate(c.X - a.X, c.Y - a.Y, c.Z - a.Z));
 
             // Dot product
-            var dotProduct = ba.X * bc.X + ba.Y * bc.Y + ba.Z * bc.Z;
+            var dotProduct = ba.X * ca.X + ba.Y * ca.Y + ba.Z * ca.Z;
+
+            var dotProductBound = Math.Min(1.0, Math.Max(-1.0, dotProduct));
 
             // Extract the angle from the dot products
-            var angle = Math.Acos(dotProduct) * 180.0 / Math.PI;
+            var angle = Math.Acos(dotProductBound) * 180.0 / Math.PI;
 
             return angle;
         }
@@ -64,56 +59,83 @@ namespace App.Logic
                 .Cast<InterfererInstruction>()
                 .ToList();
 
-            // Map of user with list of all available satellites
-            var userSatelliteVisibilityMap = users.SelectMany(user => satellites
+            // Map of satellite with list of all potential users
+            var satelliteUserVisibilityMap = users.SelectMany(user => satellites
                     // User angle should be <= 45 degrees
                     .Where(satellite =>
-                        CalculateAlpha(user.Coordinate, Coordinate.Origin, satellite.Coordinate) +  UserAngle > 180.0)
+                        CalculateAlpha(user.Coordinate, Coordinate.Origin, satellite.Coordinate) +
+                        _beamConfiguration.UserAngle > 180.0)
                     .Where(satellite =>
                         // Satellites must not be within 20 degrees of a beam from interferes
                         interferes
                             .All(interfere =>
-                                CalculateAlpha(user.Coordinate, interfere.Coordinate, satellite.Coordinate) >= MaxInterferesInterference))
-                    .Select(satellite => (user, satellite)))
-                .GroupBy(t => t.user)
-                .ToDictionary(t => t.Key, t => t.Select(p => p.satellite).ToList());
-            
-            var satelliteAvailability = satellites.ToDictionary(satellite => satellite, _ => 0);
-            var satelliteColors = satellites
-                .ToDictionary(satellite => satellite, _ => Enumerable.Range(0, NumColors)
-                    .ToDictionary(x => x, _ => false));
-            var satelliteBeams = satellites
-                .ToDictionary(satellite => satellite, _ => new List<Coordinate>());
-            
-            foreach (var (user, availableSatellites) in userSatelliteVisibilityMap)
-            {
-                foreach (var satellite in availableSatellites)
-                {
-                    // Up to 32 beams simultaneously
-                    if (satelliteAvailability[satellite] < MaxSimultaneousBeams)
-                    {
-                        satelliteAvailability[satellite]++;
+                                CalculateAlpha(user.Coordinate, interfere.Coordinate, satellite.Coordinate) >=
+                                _beamConfiguration.MaxInterferesInterference))
+                    .Select(satellite => (satellite, user)))
+                .GroupBy(t => t.satellite)
+                .ToDictionary(t => t.Key, t => t.Select(p => p.user).ToList());
 
-                        foreach (var color in Enumerable.Range(0, NumColors))
+            // Map of satellites with current count of utilization
+            var satelliteAvailability = satellites.ToDictionary(satellite => satellite, _ => 0);
+            // Map of satellites with current utilization with current count of utilization mapped by colors
+            var satelliteBeams = satellites
+                .ToDictionary(satellite => satellite,
+                    _ => Enumerable.Range(0, _beamConfiguration.NumColors)
+                        .ToDictionary(color => color, _ => new List<Coordinate>()));
+
+            // Map of user assignments
+            var userAssignments = users.ToDictionary(user => user, _ => false);
+
+            // Service highest population of potential users first
+            foreach (var (satellite, potentialUsers) in
+                     satelliteUserVisibilityMap
+                         .OrderByDescending(x => x.Value.Count))
+            {
+                foreach (var user in potentialUsers.TakeWhile(user => !userAssignments[user]))
+                {
+                    // Satellite is fully utilized and cannot service any more user
+                    if (satelliteAvailability[satellite] >= _beamConfiguration.MaxSimultaneousBeams)
+                    {
+                        break;
+                    }
+
+                    foreach (var color in Enumerable.Range(0, _beamConfiguration.NumColors))
+                    {
+                        // On each Starlink satellite, no two beams of the same color may be pointed within 10 degrees
+                        // of each other, or they will interfere with each other.
+                        if (satelliteBeams[satellite][color].All(beam =>
+                                CalculateAlpha(satellite.Coordinate, user.Coordinate, beam) >=
+                                _beamConfiguration.MaxSelfInterference))
                         {
-                            if (satelliteBeams[satellite].All(beam => CalculateAlpha(satellite.Coordinate, user.Coordinate, beam) >= MaxSelfInterference))
-                            {
-                                satelliteBeams[satellite].Add(user.Coordinate);
-                                
-                                yield return new OrderInstruction(satellite.Id, satelliteBeams[satellite].Count, user.Id, color);
-                            }
+                            // Satellite is now supporting one more user
+                            satelliteAvailability[satellite]++;
+                            // Satellite at this color is now supporting user with this coordinate
+                            satelliteBeams[satellite][color].Add(user.Coordinate);
+                            // Mark this user as served
+                            userAssignments[user] = true;
+
+                            yield return new OrderInstruction(
+                                satellite.Id,
+                                // Get count of list of users this satellite is currently supporting 
+                                satelliteAvailability[satellite],
+                                user.Id,
+                                color);
+
+                            // Finished assigning a beam to user, bubble up from the nested loops
+                            break;
                         }
                     }
                 }
             }
         }
 
-        private double Magnitude(Coordinate coordinate)
+        private static double Magnitude(Coordinate coordinate)
         {
-            return Math.Sqrt(Math.Pow(coordinate.X, 2) + Math.Pow(coordinate.Y, 2) + Math.Pow(coordinate.Z, 2));
+            var (x, y, z) = coordinate;
+            return Math.Sqrt(Math.Pow(x, 2) + Math.Pow(y, 2) + Math.Pow(z, 2));
         }
 
-        private Coordinate Normalize(Coordinate coordinate)
+        private static Coordinate Normalize(Coordinate coordinate)
         {
             var magnitude = Magnitude(coordinate);
 
@@ -136,7 +158,7 @@ namespace App.Logic
         /// </summary>
         /// <param name="filename">file path.</param>
         /// <returns><see cref="Subroutine"/> AST node.</returns>
-        private Subroutine Parser(string filename)
+        private static Subroutine Parser(string filename)
         {
             var str = CharStreams.fromPath(filename);
 
@@ -149,16 +171,6 @@ namespace App.Logic
 
             lexer.AddErrorListener(listenerLexer);
             parser.AddErrorListener(listenerParser);
-
-            foreach (var token in lexer.GetAllTokens())
-            {
-                if (token.Channel == Lexer.DefaultTokenChannel)
-                {
-                    _logger.LogTrace("{%s}: {%s}", lexer.Vocabulary.GetSymbolicName(token.Type), token.Text);
-                }
-            }
-
-            lexer.Reset();
 
             var tree = parser.subroutine();
             var visitor = new BeamVisitor();
