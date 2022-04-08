@@ -1,0 +1,11 @@
+# Impossible five-user case
+# - Single satellite, 550km directly over (equator, prime merridian).
+# - Five users, in a 2-km diameter cross, on the equator at the prime meridian
+# It is not possible to connect all 5 users without violating at least one constraint.
+
+sat 1 6921 0 0
+user 1 6371 0 0
+user 2 6372 0 0
+user 3 6370 0 0
+user 4 6371 0 1
+user 5 6371 0 -1

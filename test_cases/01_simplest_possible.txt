@@ -1,0 +1,6 @@
+# Simplest possible test case
+# - Single satellite, 550km directly overhead a single user
+# - Single user, on the equator at the prime meridian
+
+sat 1 6921 0 0
+user 1 6371 0 0

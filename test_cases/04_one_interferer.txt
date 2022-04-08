@@ -1,0 +1,8 @@
+# Impossible one-user case.
+# - Single satellite, 550km directly overhead a single user.
+# - An interfering sat 1km above the Starlink sat.
+# It is not possible to connect this user without violating at least one constraint.
+
+sat 1 6921 0 0
+user 1 6371 0 0
+interferer 1 6922 0 0

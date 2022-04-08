@@ -1,0 +1,20 @@
+# Lines that start with '#' are considered comments, and should be ignored
+#
+# The input is the id and position of the Starlink satellites, users, and interferers:
+#   sat <id> <position x y z>
+#   user <id> <position x y z>
+#   interferer <id> <position x y z>
+#
+# Positions are in kilometers from the center of the planet.
+
+# User on the equator at the Prime Meridian, satellite 550km overhead
+user 1 6371 0 0
+sat 1 6921 0 0
+
+# Two users close to the North Pole, satellite 550km overhead
+user 2 0 0 6371
+user 3 111.189281412 0 6370.02966584
+sat 2 0 0 6921
+
+# Interferer satellite in GEO at 180 degrees West (opposite the Prime Meridian)
+interferer 1 -42164 0 0

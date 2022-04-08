@@ -1,0 +1,7 @@
+# Two-user case
+# - Single satellite, 550km directly over (equator, prime merridian).
+# - Two users, one 1km above the other, on the equator at the prime meridian
+
+sat 1 6921 0 0
+user 1 6371 0 0
+user 2 6372 0 0
