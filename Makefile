@@ -1,5 +1,5 @@
 DOCKER_TAG=hesamian
-DOCKER_RUN=docker run -v `pwd`:/root -it --rm -w /root ${DOCKER_TAG}
+DOCKER_RUN=docker run -v `pwd`:/root --rm -w /root ${DOCKER_TAG}
 TEST_DIR=test_cases
 
 dockerbuild: App/App.csproj
@@ -8,14 +8,15 @@ dockerbuild: App/App.csproj
 %.run: %.txt dockerbuild 
 	${DOCKER_RUN} $<
 
-%.out: %.txt dockerbuild
-	${DOCKER_RUN} $< > $@
+%.out: %.txt dockerbuild 
+	touch $@ && ${DOCKER_RUN} $< > $@
 
-%.test: %.out
-	python3 evaluate.py $<
+%.test: %.txt %.out
+	python3 evaluate.py $^
 
 .PHONY: regression
-regression: $(TEST_DIR)/*.txt
-	for file in $^ ; do \
-    	echo $(basename $${file}).test ; \
-    done
+regression: $(patsubst %.txt,%.test,$(wildcard $(TEST_DIR)/*.txt))
+	echo "Running regression"
+
+clean:
+	rm -f *.out $(TEST_DIR)/*.out
