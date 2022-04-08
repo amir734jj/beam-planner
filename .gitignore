@@ -605,4 +605,4 @@ Antlr4.sln
 runtime/PHP
 
 *.tokens
-#.dotnet
+.dotnet
