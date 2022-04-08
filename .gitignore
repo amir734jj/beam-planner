@@ -606,3 +606,4 @@ runtime/PHP
 
 *.tokens
 .dotnet
+*.out
