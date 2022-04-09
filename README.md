@@ -14,7 +14,7 @@ This application is written in C# .NET Core and it uses
 ## Solution
 This problem is NP-Complete (because verification of correctness of the solution does not 
 run in polynomial time) and I used greedy programming to solve this problem. Basically I tried to
-start with all possible combinations and tried to filter down. Also I prioritized serving the most
+start with all potential combinations and tried to filter down. Also I prioritized serving the most
 concentration of users (notice the `OrderBy` in the code) to avoid holding up the satellite to small
 subset of users.
 
