@@ -56,7 +56,7 @@ Some optimizations I did/attempted:
 - parallelized the outer loops when there is many level of nested loop by using C# built-in `AsParallel()`
 - tried to cache the result of calculation of inner angle of three vectors but code rarely encountered duplicate
 calculation so it did not result in any performance improvement
-- result of `Analyzer` is an `IEnumerable` or an iterator which means as the new result comes out of the function, 
+- result of `Analyzer` method is an `IEnumerable` or an iterator which means as the new result comes out of the function, 
 it gets printed so no list is used to store the result as they are calculated
 - used Rider (C# IDE) memory profiling to analyze which block of code is using too much memory
 
