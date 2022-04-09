@@ -18,6 +18,11 @@ start with all possible combinations and tried to filter down. Also I prioritize
 concentration of users (notice the `OrderBy` in the code) to avoid holding up the satellite to small
 subset of users.
 
+## Observation
+As the number of users/satellites/interferences increase, the completness of my solution decrease. This is expected 
+as my solution uses greedy programming (greedy condition: always start with sattelite with covered users). The correct
+solution should use dynamic programming such that it would provide service to maximum number of users.
+
 ## Testing
 
 _Make sure you have Docker installed._
