@@ -38,6 +38,9 @@ make test_cases/00_example.test
 
 # To test all examples
 make regression
+
+# To see how long it takes to run each test case
+make benchmakr
 ```
 
 ## Notes 
