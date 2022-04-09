@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using App.Interfaces;
 using App.Logic;
 using App.Models;
@@ -16,10 +17,25 @@ namespace App
                 .AddLogging(cfg => cfg.AddConsole())
                 .Configure<LoggerFilterOptions>(cfg => cfg.MinLevel = LogLevel.Error)
                 .AddSingleton<IBeamPlanner, BeamPlanner>()
-                .AddSingleton(_ => JsonConvert.DeserializeObject<BeamConfiguration>(File.ReadAllText("config.json")))
+                .AddSingleton(_ =>
+                    JsonConvert.DeserializeObject<BeamConfiguration>(
+                        File.ReadAllText(Path.Join(Environment.GetEnvironmentVariable("CONFIG_PATH"), "config.json"))))
                 .BuildServiceProvider();
 
-            serviceProvider.GetRequiredService<IBeamPlanner>().Run(args[0]);
+            var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+
+            if (args.Length != 1)
+            {
+                logger.LogError("Input path should be provided as argument");
+            }
+            else if (!File.Exists(args[0]))
+            {
+                logger.LogError("File path does not exist");
+            }
+            else
+            {
+                serviceProvider.GetRequiredService<IBeamPlanner>().Run(args[0]);
+            }
         }
     }
 }

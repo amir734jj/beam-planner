@@ -1,5 +1,5 @@
 {
-  "maxSimultaneousBeams": 32.0,
+  "maxSimultaneousBeams": 32,
   "userAngle": 45.0,
   "maxInterferesInterference": 20,
   "maxSelfInterference": 10,

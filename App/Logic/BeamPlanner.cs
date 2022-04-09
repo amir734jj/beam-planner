@@ -21,46 +21,28 @@ namespace App.Logic
             _logger = logger;
         }
 
-        /// <summary>
-        /// Calculate angle between 3 points in 3D space.
-        /// Note: assumes we want 1 vector to run from coord1 -> coord2, and the other from coord3 -> coord2.
-        /// </summary>
-        /// <param name="a">coordinate a.</param>
-        /// <param name="b">coordinate b.</param>
-        /// <param name="c">coordinate c.</param>
-        /// <returns>Inner angle between 3 coordinates.</returns>
-        private static double CalculateAlpha(Coordinate a, Coordinate b, Coordinate c)
-        {
-            var ba = Normalize(new Coordinate(b.X - a.X, b.Y - a.Y, b.Z - a.Z));
-            var ca = Normalize(new Coordinate(c.X - a.X, c.Y - a.Y, c.Z - a.Z));
-
-            // Dot product
-            var dotProduct = ba.X * ca.X + ba.Y * ca.Y + ba.Z * ca.Z;
-
-            var dotProductBound = Math.Min(1.0, Math.Max(-1.0, dotProduct));
-
-            // Extract the angle from the dot products
-            var angle = Math.Acos(dotProductBound) * 180.0 / Math.PI;
-
-            return angle;
-        }
-
         private IEnumerable<OrderInstruction> Analyzer(Subroutine subroutine)
         {
+            // Collect users
             var users = subroutine.Instructions.Where(x => x is UserInstruction)
                 .Cast<UserInstruction>()
                 .ToList();
 
+            // Collect satellites
             var satellites = subroutine.Instructions.Where(x => x is SatelliteInstruction)
                 .Cast<SatelliteInstruction>()
                 .ToList();
 
+            // Collect interferes
             var interferes = subroutine.Instructions.Where(x => x is InterfererInstruction)
                 .Cast<InterfererInstruction>()
                 .ToList();
 
             // Map of satellite with list of all potential users
-            var satelliteUserVisibilityMap = users.SelectMany(user => satellites
+            var satelliteUserVisibilityMap = users
+                // Parallelize the loop over users
+                .AsParallel()
+                .SelectMany(user => satellites
                     // User angle should be <= 45 degrees
                     .Where(satellite =>
                         CalculateAlpha(user.Coordinate, Coordinate.Origin, satellite.Coordinate) +
@@ -89,9 +71,12 @@ namespace App.Logic
             // Service highest population of potential users first
             foreach (var (satellite, potentialUsers) in
                      satelliteUserVisibilityMap
+                          // Parallelize the loop over satellite/users map
+                         .AsParallel()
                          .OrderByDescending(x => x.Value.Count))
             {
-                foreach (var user in potentialUsers.TakeWhile(user => !userAssignments[user]))
+                // Assign beam to users that have not been assigned yet
+                foreach (var user in potentialUsers.Where(user => !userAssignments[user]))
                 {
                     // Satellite is fully utilized and cannot service any more user
                     if (satelliteAvailability[satellite] >= _beamConfiguration.MaxSimultaneousBeams)
@@ -146,11 +131,14 @@ namespace App.Logic
         {
             var subroutine = Parser(filename);
 
-            var result = Analyzer(subroutine).ToList();
+            // Result is now an iterator
+            var result = Analyzer(subroutine);
 
-            var text = string.Join(Environment.NewLine, result);
-
-            Console.WriteLine(text);
+            // Print the instructions as they come
+            foreach (var orderInstruction in result)
+            {
+                Console.WriteLine(orderInstruction);
+            }
         }
 
         /// <summary>
@@ -178,6 +166,30 @@ namespace App.Logic
             var subroutine = (Subroutine)visitor.Visit(tree);
 
             return subroutine;
+        }
+        
+        /// <summary>
+        /// Calculate angle between 3 points in 3D space.
+        /// Note: assumes we want 1 vector to run from coord1 -> coord2, and the other from coord3 -> coord2.
+        /// </summary>
+        /// <param name="a">coordinate a.</param>
+        /// <param name="b">coordinate b.</param>
+        /// <param name="c">coordinate c.</param>
+        /// <returns>Inner angle between 3 coordinates.</returns>
+        private double CalculateAlpha(Coordinate a, Coordinate b, Coordinate c)
+        {
+            var ba = Normalize(new Coordinate(b.X - a.X, b.Y - a.Y, b.Z - a.Z));
+            var ca = Normalize(new Coordinate(c.X - a.X, c.Y - a.Y, c.Z - a.Z));
+
+            // Dot product
+            var dotProduct = ba.X * ca.X + ba.Y * ca.Y + ba.Z * ca.Z;
+
+            var dotProductBound = Math.Min(1.0, Math.Max(-1.0, dotProduct));
+
+            // Extract the angle from the dot products
+            var angle = Math.Acos(dotProductBound) * 180.0 / Math.PI;
+
+            return angle;
         }
     }
 }

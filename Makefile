@@ -9,16 +9,21 @@ dockerbuild: App/App.csproj
 	${DOCKER_RUN} $<
 
 %.out: %.txt dockerbuild
-	d=$$(date +%s) \
-		; bash -c "cat <(${DOCKER_RUN} $<) > $@" \
-		&& echo "*** Runtime took $$(($$(date +%s)-d)) seconds ***"
+	@d=$$(date +%s) \
+		; basename $* | xargs printf 'Testing %s '  \
+		; bash -c "cat <(${DOCKER_RUN} $<) > $@"    \
+		&& echo "($$(($$(date +%s)-d)) seconds)"
 
 %.test: %.txt %.out
 	python3 evaluate.py $^
 
 .PHONY: regression
 regression: $(patsubst %.txt,%.test,$(wildcard $(TEST_DIR)/*.txt))
-	echo "Running regression"
+	@echo "Finished running regression"
+
+.PHONY: benchmark
+benchmark: $(patsubst %.txt,%.out,$(wildcard $(TEST_DIR)/*.txt))
+	@echo "Finished running benchmark"
 
 clean:
 	rm -f *.out $(TEST_DIR)/*.out

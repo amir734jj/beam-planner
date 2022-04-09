@@ -33,3 +33,23 @@ make test_cases/00_example.test
 make regression
 ```
 
+## Notes 
+
+- There is a `config.json` file available under `/App` which can be used to quickly modify the parameters
+
+## Benchmark
+
+```shell
+Testing 00_example (1 seconds)
+Testing 01_simplest_possible (1 seconds)
+Testing 02_two_users (1 seconds)
+Testing 03_five_users (1 seconds)
+Testing 04_one_interferer (1 seconds)
+Testing 05_equatorial_plane (1 seconds)
+Testing 06_partially_fullfillable (1 seconds)
+Testing 07_eighteen_planes (1 seconds)
+Testing 08_eighteen_planes_northern (2 seconds)
+Testing 09_ten_thousand_users (2 seconds)
+Testing 10_ten_thousand_users_geo_belt (2 seconds)
+Testing 11_one_hundred_thousand_users (21 seconds)
+```
