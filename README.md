@@ -79,7 +79,6 @@ Tested on
 Architecture:                    x86_64
 CPU op-mode(s):                  32-bit, 64-bit
 Byte Order:                      Little Endian
-Address sizes:                   39 bits physical, 48 bits virtual
 CPU(s):                          8
 On-line CPU(s) list:             0-7
 Thread(s) per core:              2
@@ -90,16 +89,7 @@ Vendor ID:                       GenuineIntel
 CPU family:                      6
 Model:                           142
 Model name:                      Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz
-Stepping:                        11
-CPU MHz:                         1286.300
-CPU max MHz:                     4600.0000
-CPU min MHz:                     400.0000
-BogoMIPS:                        3999.93
-Virtualization:                  VT-x
-L1d cache:                       128 KiB
-L1i cache:                       128 KiB
-L2 cache:                        1 MiB
-L3 cache:                        8 MiB
+
 
 (main) ✗ cat /proc/meminfo
 MemTotal:       16090976 kB
