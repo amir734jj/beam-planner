@@ -43,6 +43,8 @@ make regression
 make benchmark
 ```
 
+There is a [`regression.txt`](regression.txt) file available.
+
 ## Notes 
 
 - There is a `config.json` file available under `/App` which can be used to quickly modify the parameters
