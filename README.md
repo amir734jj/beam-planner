@@ -19,8 +19,8 @@ concentration of users (notice the `OrderBy` in the code) to avoid holding up th
 subset of users.
 
 ## Observation
-As the number of users/satellites/interferences increase, the completness of my solution decrease. This is expected 
-as my solution uses greedy programming (greedy condition: always start with sattelite with covered users). The correct
+As the number of users/satellites/interferences increase, the completeness of my solution decrease. This is expected 
+as my solution uses greedy programming (greedy condition: always start with satellite with covered users). The correct
 solution should use dynamic programming such that it would provide service to maximum number of users.
 
 ## Testing
