@@ -44,6 +44,14 @@ make regression
 
 ## Benchmark
 
+Some optimizations I did/attempted:
+- used ANTLR which is an state of art lexer/parser used by many application so reading the instructions is fast
+- parallelized the outer loops when there is many level of nested loop by using C# built-in `AsParallel()`
+- tried to cache the result of calculation of inner angle of three vectors but code rarely encountered duplicate
+calculation so it did not result in any performance improvement
+- result of `Analyzer` is an `IEnumerable` or an iterator which means as the new result comes out of the function, 
+it gets printed so no list is used to store the result as they are calculated
+
 ```shell
 Testing 00_example (1 seconds)
 Testing 01_simplest_possible (1 seconds)
