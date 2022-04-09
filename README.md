@@ -2,7 +2,7 @@
 
 This application is written in C# .NET Core and it uses
 - [ANTLR4](https://www.antlr.org/) for lexer and parser of instructions (`LL(*)` parser)
-  - see the `BeamLexer.g4` and `BeamParser.g4` for the lexer and parser 
+  - see the `BeamLexer.g4` and `BeamParser.g4` for the lexer and parser definition
 - [Docker](https://www.docker.com/) to build the console app (Ubuntu+.NET Core SDK+Java for ANTLR)
   - Using Docker was needed because ANTLR uses Java under the hood to analyze the context-free grammar
   and then it dumps C# code during the build time
