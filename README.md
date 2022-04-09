@@ -75,7 +75,7 @@ Testing 10_ten_thousand_users_geo_belt (2 seconds)
 Testing 11_one_hundred_thousand_users (15 seconds)
 ```
 
-Tested on 
+Tested on Ubuntu 21.10 with the following spec:
 ```shell
 (main) ✗ lscpu
 Architecture:                    x86_64
