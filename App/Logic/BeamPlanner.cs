@@ -176,7 +176,7 @@ namespace App.Logic
         /// <param name="b">coordinate b.</param>
         /// <param name="c">coordinate c.</param>
         /// <returns>Inner angle between 3 coordinates.</returns>
-        private double CalculateAlpha(Coordinate a, Coordinate b, Coordinate c)
+        private static double CalculateAlpha(Coordinate a, Coordinate b, Coordinate c)
         {
             var ba = Normalize(new Coordinate(b.X - a.X, b.Y - a.Y, b.Z - a.Z));
             var ca = Normalize(new Coordinate(c.X - a.X, c.Y - a.Y, c.Z - a.Z));
@@ -184,10 +184,8 @@ namespace App.Logic
             // Dot product
             var dotProduct = ba.X * ca.X + ba.Y * ca.Y + ba.Z * ca.Z;
 
-            var dotProductBound = Math.Min(1.0, Math.Max(-1.0, dotProduct));
-
             // Extract the angle from the dot products
-            var angle = Math.Acos(dotProductBound) * 180.0 / Math.PI;
+            var angle = Math.Acos(dotProduct) * 180.0 / Math.PI;
 
             return angle;
         }

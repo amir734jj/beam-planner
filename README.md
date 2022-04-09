@@ -19,9 +19,11 @@ concentration of users (notice the `OrderBy` in the code) to avoid holding up th
 subset of users.
 
 ## Observation
-As the number of users/satellites/interferences increase, the completeness of my solution decrease. This is expected 
+- As the number of users/satellites/interferences increase, the completeness of my solution decrease. This is expected 
 as my solution uses greedy programming (greedy condition: always start with satellite with covered users). The correct
 solution should use dynamic programming such that it would provide service to maximum number of users.
+- The time complexity of this code is `O(users x satellites x interferences)`
+- Although my greedy code does not provide _perfect_ solution, but it make it up by being very fast
 
 ## Testing
 
@@ -51,6 +53,7 @@ Some optimizations I did/attempted:
 calculation so it did not result in any performance improvement
 - result of `Analyzer` is an `IEnumerable` or an iterator which means as the new result comes out of the function, 
 it gets printed so no list is used to store the result as they are calculated
+- used Rider (C# IDE) memory profiling to analyze which block of code is using too much memory
 
 ```shell
 Testing 00_example (1 seconds)
@@ -64,5 +67,37 @@ Testing 07_eighteen_planes (1 seconds)
 Testing 08_eighteen_planes_northern (2 seconds)
 Testing 09_ten_thousand_users (2 seconds)
 Testing 10_ten_thousand_users_geo_belt (2 seconds)
-Testing 11_one_hundred_thousand_users (21 seconds)
+Testing 11_one_hundred_thousand_users (15 seconds)
+```
+
+Tested on 
+```shell
+(main) ✗ lscpu
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+Address sizes:                   39 bits physical, 48 bits virtual
+CPU(s):                          8
+On-line CPU(s) list:             0-7
+Thread(s) per core:              2
+Core(s) per socket:              4
+Socket(s):                       1
+NUMA node(s):                    1
+Vendor ID:                       GenuineIntel
+CPU family:                      6
+Model:                           142
+Model name:                      Intel(R) Core(TM) i7-8565U CPU @ 1.80GHz
+Stepping:                        11
+CPU MHz:                         1286.300
+CPU max MHz:                     4600.0000
+CPU min MHz:                     400.0000
+BogoMIPS:                        3999.93
+Virtualization:                  VT-x
+L1d cache:                       128 KiB
+L1i cache:                       128 KiB
+L2 cache:                        1 MiB
+L3 cache:                        8 MiB
+
+(main) ✗ cat /proc/meminfo
+MemTotal:       16090976 kB
 ```
