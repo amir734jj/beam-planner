@@ -2,3 +2,5 @@ out
 gen
 .git
 *.out
+App/bin
+App/obj
