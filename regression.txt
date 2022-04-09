@@ -1,0 +1,181 @@
+Testing 00_example (1 seconds)
+python3 evaluate.py test_cases/00_example.txt test_cases/00_example.out
+Reading scenario file test_cases/00_example.txt
+Reading solution file test_cases/00_example.out.
+Checking user coverage...
+100.0% of 3 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 01_simplest_possible (1 seconds)
+python3 evaluate.py test_cases/01_simplest_possible.txt test_cases/01_simplest_possible.out
+Reading scenario file test_cases/01_simplest_possible.txt
+Reading solution file test_cases/01_simplest_possible.out.
+Checking user coverage...
+100.0% of 1 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 02_two_users (1 seconds)
+python3 evaluate.py test_cases/02_two_users.txt test_cases/02_two_users.out
+Reading scenario file test_cases/02_two_users.txt
+Reading solution file test_cases/02_two_users.out.
+Checking user coverage...
+100.0% of 2 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 03_five_users (1 seconds)
+python3 evaluate.py test_cases/03_five_users.txt test_cases/03_five_users.out
+Reading scenario file test_cases/03_five_users.txt
+Reading solution file test_cases/03_five_users.out.
+Checking user coverage...
+80.0% of 5 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 04_one_interferer (1 seconds)
+python3 evaluate.py test_cases/04_one_interferer.txt test_cases/04_one_interferer.out
+Reading scenario file test_cases/04_one_interferer.txt
+Reading solution file test_cases/04_one_interferer.out.
+Checking user coverage...
+0.0% of 1 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 05_equatorial_plane (1 seconds)
+python3 evaluate.py test_cases/05_equatorial_plane.txt test_cases/05_equatorial_plane.out
+Reading scenario file test_cases/05_equatorial_plane.txt
+Reading solution file test_cases/05_equatorial_plane.out.
+Checking user coverage...
+100.0% of 1000 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 06_partially_fullfillable (2 seconds)
+python3 evaluate.py test_cases/06_partially_fullfillable.txt test_cases/06_partially_fullfillable.out
+Reading scenario file test_cases/06_partially_fullfillable.txt
+Reading solution file test_cases/06_partially_fullfillable.out.
+Checking user coverage...
+75.52% of 2500 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 07_eighteen_planes (1 seconds)
+python3 evaluate.py test_cases/07_eighteen_planes.txt test_cases/07_eighteen_planes.out
+Reading scenario file test_cases/07_eighteen_planes.txt
+Reading solution file test_cases/07_eighteen_planes.out.
+Checking user coverage...
+97.04% of 2500 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 08_eighteen_planes_northern (1 seconds)
+python3 evaluate.py test_cases/08_eighteen_planes_northern.txt test_cases/08_eighteen_planes_northern.out
+Reading scenario file test_cases/08_eighteen_planes_northern.txt
+Reading solution file test_cases/08_eighteen_planes_northern.out.
+Checking user coverage...
+78.16% of 2500 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 09_ten_thousand_users (2 seconds)
+python3 evaluate.py test_cases/09_ten_thousand_users.txt test_cases/09_ten_thousand_users.out
+Reading scenario file test_cases/09_ten_thousand_users.txt
+Reading solution file test_cases/09_ten_thousand_users.out.
+Checking user coverage...
+87.92999999999999% of 10000 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 10_ten_thousand_users_geo_belt (2 seconds)
+python3 evaluate.py test_cases/10_ten_thousand_users_geo_belt.txt test_cases/10_ten_thousand_users_geo_belt.out
+Reading scenario file test_cases/10_ten_thousand_users_geo_belt.txt
+Reading solution file test_cases/10_ten_thousand_users_geo_belt.out.
+Checking user coverage...
+78.78% of 10000 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Testing 11_one_hundred_thousand_users (18 seconds)
+python3 evaluate.py test_cases/11_one_hundred_thousand_users.txt test_cases/11_one_hundred_thousand_users.out
+Reading scenario file test_cases/11_one_hundred_thousand_users.txt
+Reading solution file test_cases/11_one_hundred_thousand_users.out.
+Checking user coverage...
+29.221999999999998% of 100000 total users covered.
+Checking each user can see their assigned satellite...
+	All users' assigned satellites are visible.
+Checking no sat interferes with itself...
+	No satellite self-interferes.
+Checking no sat interferes with a non-Starlink satellite...
+	No satellite interferes with a non-Starlink satellite!
+
+Solution passed all checks!
+
+Finished running regression
