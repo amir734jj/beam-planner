@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -38,12 +37,6 @@ namespace App.Logic
             var interferes = subroutine.Instructions.Where(x => x is InterfererInstruction)
                 .Cast<InterfererInstruction>()
                 .ToList();
-            
-            var serializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                Formatting = Formatting.None
-            };
 
             // Map of satellite with list of all potential users
             var satelliteUserVisibilityMap = users
