@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Antlr4.Runtime;
@@ -37,6 +38,12 @@ namespace App.Logic
             var interferes = subroutine.Instructions.Where(x => x is InterfererInstruction)
                 .Cast<InterfererInstruction>()
                 .ToList();
+            
+            var serializerSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                Formatting = Formatting.None
+            };
 
             // Map of satellite with list of all potential users
             var satelliteUserVisibilityMap = users
@@ -72,8 +79,7 @@ namespace App.Logic
             foreach (var (satellite, potentialUsers) in
                      satelliteUserVisibilityMap
                           // Parallelize the loop over satellite/users map
-                         .AsParallel()
-                         .OrderByDescending(x => x.Value.Count))
+                          .OrderBy(x => x.Value.Count))
             {
                 // Assign beam to users that have not been assigned yet
                 foreach (var user in potentialUsers.Where(user => !userAssignments[user]))
@@ -171,6 +177,7 @@ namespace App.Logic
         /// <summary>
         /// Calculate angle between 3 points in 3D space.
         /// Note: assumes we want 1 vector to run from coord1 -> coord2, and the other from coord3 -> coord2.
+        /// Source: https://en.wikipedia.org/wiki/Multiplication_of_vectors
         /// </summary>
         /// <param name="a">coordinate a.</param>
         /// <param name="b">coordinate b.</param>
@@ -185,6 +192,7 @@ namespace App.Logic
             var dotProduct = ba.X * ca.X + ba.Y * ca.Y + ba.Z * ca.Z;
 
             // Extract the angle from the dot products
+            // Converts radian to angle
             var angle = Math.Acos(dotProduct) * 180.0 / Math.PI;
 
             return angle;
